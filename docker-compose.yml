@@ -1,0 +1,32 @@
+services:
+  app:
+    build: .
+    ports:
+      - "${APP_PORT:-8000}:8000"
+    environment:
+      DATABASE_URL: postgresql+psycopg://craft:craft@db:5432/craft
+      MINER_API_BASE_URL: ${MINER_API_BASE_URL:-http://miner:8000}
+      MACHINE_READABLE_CHECKER_API_BASE_URL: ${MACHINE_READABLE_CHECKER_API_BASE_URL:-http://machine-readable-checker:8000}
+      API_TIMEOUT_SECONDS: ${API_TIMEOUT_SECONDS:-30}
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: craft
+      POSTGRES_USER: craft
+      POSTGRES_PASSWORD: craft
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U craft -d craft"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  postgres-data:

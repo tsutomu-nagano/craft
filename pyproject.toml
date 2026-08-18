@@ -1,0 +1,34 @@
+[project]
+name = "craft"
+version = "0.1.0"
+description = "Machine-readable AI review platform"
+requires-python = ">=3.12"
+dependencies = [
+  "fastapi>=0.116.0",
+  "httpx>=0.28.0",
+  "mcp>=1.13.0,<2.0.0",
+  "psycopg[binary]>=3.2.0",
+  "pydantic>=2.11.0",
+  "pydantic-settings>=2.10.0",
+  "sqlalchemy>=2.0.0",
+  "uvicorn[standard]>=0.35.0",
+]
+
+[dependency-groups]
+dev = [
+  "pytest>=8.4.0",
+  "pytest-asyncio>=1.1.0",
+  "respx>=0.22.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/app"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+asyncio_mode = "auto"
+testpaths = ["tests"]
