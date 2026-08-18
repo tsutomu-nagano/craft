@@ -99,6 +99,7 @@ async def test_analyze_xlsx_runs_miner_and_checker() -> None:
     assert result.readability is not None
     assert result.readability.source == "machine-readable-checker"
     assert result.agent.needs_human_review is True
+    assert result.agent.mode == "external_chat_ui"
 
 
 async def test_analyze_csv_skips_miner() -> None:

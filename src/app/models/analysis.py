@@ -38,9 +38,23 @@ class AnalysisResource(BaseModel):
 
 
 class AgentJudgement(BaseModel):
+    mode: str = "external_chat_ui"
+    model: str | None = None
     judgement: list[dict[str, Any]] = Field(default_factory=list)
     needs_human_review: bool = True
     reasons: list[str] = Field(default_factory=list)
+    prompt: str | None = None
+    raw_output: str | None = None
+    error: str | None = None
+
+
+class AgentJudgementUpdate(BaseModel):
+    model: str | None = None
+    judgement: list[dict[str, Any]] = Field(default_factory=list)
+    needs_human_review: bool = True
+    reasons: list[str] = Field(default_factory=list)
+    prompt: str | None = None
+    raw_output: str | None = None
 
 
 class AnalysisRequest(BaseModel):

@@ -69,7 +69,7 @@ class AnalysisService:
         if resource_format in {ResourceFormat.XLS, ResourceFormat.XLSX, ResourceFormat.CSV, ResourceFormat.TSV}:
             result.readability = await self._run_checker(url)
 
-        result.agent = self._judge(result)
+        result.agent = self._initial_agent_state(result)
         result.skill_versions = {"machine-readability": "0.1.0"}
         return result
 
@@ -207,7 +207,18 @@ class AnalysisService:
             "error": f"{type(error).__name__}: {error}" if error else None,
         }
 
-    def _judge(self, result: AnalysisResult) -> AgentJudgement:
+    def _initial_agent_state(self, result: AnalysisResult) -> AgentJudgement:
+        reasons = self._human_review_reasons(result)
+        if not reasons:
+            reasons.append("Chat UI上のAIがMCP経由で判断案を作成し、record_agent_judgementで記録します。")
+        return AgentJudgement(
+            mode="external_chat_ui",
+            judgement=[],
+            needs_human_review=True,
+            reasons=reasons,
+        )
+
+    def _human_review_reasons(self, result: AnalysisResult) -> list[str]:
         reasons: list[str] = []
         if result.structure and not result.structure.ok:
             reasons.append("minerの解析に失敗したため人による確認が必要です。")
@@ -215,6 +226,4 @@ class AnalysisService:
             reasons.append("machine-readable-checkerの解析に失敗したため人による確認が必要です。")
         if result.resource.format == ResourceFormat.UNKNOWN:
             reasons.append("ファイル形式を判定できませんでした。")
-        if not reasons:
-            reasons.append("初期MVPではAI判断を確定せず、人による確認対象として保存します。")
-        return AgentJudgement(judgement=[], needs_human_review=True, reasons=reasons)
+        return reasons

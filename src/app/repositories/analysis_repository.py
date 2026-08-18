@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from app.models.analysis import AnalysisResult
+from app.models.analysis import AgentJudgement, AnalysisResult
 from app.repositories.database import AnalysisRecord, SessionLocal
 from app.repositories.review_repository import ReviewRepository
 
@@ -40,3 +40,17 @@ class AnalysisRepository:
             session.delete(record)
             session.commit()
             return True
+
+    def update_agent_judgement(
+        self,
+        analysis_id: str,
+        judgement: AgentJudgement,
+    ) -> AnalysisRecord | None:
+        with SessionLocal() as session:
+            record = session.get(AnalysisRecord, analysis_id)
+            if record is None:
+                return None
+            record.agent_result = judgement.model_dump(mode="json")
+            session.commit()
+            session.refresh(record)
+            return record

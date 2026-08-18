@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 
 from app.dependencies import get_analysis_repository, get_analysis_service
 from app.dependencies import get_review_service
-from app.models.analysis import AnalysisRequest, AnalysisResult
+from app.models.analysis import AgentJudgement, AgentJudgementUpdate, AnalysisRequest, AnalysisResult
 from app.models.review import Review, ReviewCreate
 from app.repositories.analysis_repository import AnalysisRepository
 from app.repositories.review_repository import ReviewRepository
@@ -78,6 +78,22 @@ def delete_analysis(
     if not repository.delete(analysis_id):
         raise HTTPException(status_code=404, detail="analysis not found")
     return {"status": "deleted"}
+
+
+@router.patch("/{analysis_id}/agent")
+def update_agent_judgement(
+    analysis_id: str,
+    request: AgentJudgementUpdate,
+    repository: AnalysisRepository = Depends(get_analysis_repository),
+) -> dict:
+    judgement = AgentJudgement(mode="external_chat_ui_recorded", **request.model_dump())
+    item = repository.update_agent_judgement(analysis_id, judgement)
+    if item is None:
+        raise HTTPException(status_code=404, detail="analysis not found")
+    return {
+        "analysis_id": item.analysis_id,
+        "agent": item.agent_result,
+    }
 
 
 @router.post("/{analysis_id}/reviews", response_model=Review)

@@ -81,7 +81,7 @@ async function loadDetail(id) {
         </section>
         <section class="panel">
           <h3>AI判断</h3>
-          <pre>${json(item.agent)}</pre>
+          ${renderAgent(item.agent)}
         </section>
       </div>
       <div>
@@ -156,6 +156,21 @@ function renderApiExecutions(executions) {
         )
         .join("")}
     </div>
+  `;
+}
+
+function renderAgent(agent) {
+  if (!agent) {
+    return '<p class="empty">AI判断は記録されていません。</p>';
+  }
+  return `
+    <dl class="kv">
+      <dt>mode</dt><dd>${agent.mode || "unknown"}</dd>
+      <dt>model</dt><dd>${agent.model || "-"}</dd>
+      <dt>prompt</dt><dd>${agent.prompt || "-"}</dd>
+      <dt>review</dt><dd>${agent.needs_human_review ? "必要" : "不要"}</dd>
+    </dl>
+    <pre>${json(agent)}</pre>
   `;
 }
 

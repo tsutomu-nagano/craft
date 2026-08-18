@@ -1,0 +1,6 @@
+FROM alpine:3.20
+
+RUN adduser -D -h /home/tunnel-client tunnel-client
+
+USER tunnel-client
+WORKDIR /home/tunnel-client
