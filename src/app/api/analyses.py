@@ -1,12 +1,13 @@
 from fastapi import APIRouter, Depends, HTTPException
 
 from app.dependencies import get_analysis_repository, get_analysis_service
+from app.dependencies import get_review_service
 from app.models.analysis import AnalysisRequest, AnalysisResult
 from app.models.review import Review, ReviewCreate
 from app.repositories.analysis_repository import AnalysisRepository
+from app.repositories.review_repository import ReviewRepository
 from app.services.analysis import AnalysisService
 from app.services.review import ReviewService
-from app.dependencies import get_review_service
 
 router = APIRouter(prefix="/api/analyses", tags=["analyses"])
 
@@ -52,7 +53,31 @@ def get_analysis(
         "skill_versions": item.skill_versions,
         "status": item.status,
         "created_at": item.created_at,
+        "reviews": [
+            {
+                "review_id": review.review_id,
+                "target_issue": review.target_issue,
+                "ai_judgement": review.ai_judgement,
+                "human_decision": review.human_decision,
+                "corrected_content": review.corrected_content,
+                "reason": review.reason,
+                "comment": review.comment,
+                "reviewer": review.reviewer,
+                "reviewed_at": review.reviewed_at,
+            }
+            for review in ReviewRepository().list_by_analysis(analysis_id)
+        ],
     }
+
+
+@router.delete("/{analysis_id}")
+def delete_analysis(
+    analysis_id: str,
+    repository: AnalysisRepository = Depends(get_analysis_repository),
+) -> dict[str, str]:
+    if not repository.delete(analysis_id):
+        raise HTTPException(status_code=404, detail="analysis not found")
+    return {"status": "deleted"}
 
 
 @router.post("/{analysis_id}/reviews", response_model=Review)

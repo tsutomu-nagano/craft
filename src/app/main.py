@@ -1,6 +1,8 @@
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
+from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
 
 from app.api.analyses import router as analyses_router
 from app.api.reviews import router as reviews_router
@@ -23,8 +25,14 @@ app = FastAPI(
 app.include_router(analyses_router)
 app.include_router(reviews_router)
 app.mount("/mcp", mcp_app)
+app.mount("/static", StaticFiles(directory="frontend"), name="static")
 
 
 @app.get("/health")
 def health() -> dict[str, str]:
     return {"status": "ok"}
+
+
+@app.get("/")
+def index() -> FileResponse:
+    return FileResponse("frontend/index.html")

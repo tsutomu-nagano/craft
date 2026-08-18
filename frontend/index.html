@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>craft</title>
+    <link rel="stylesheet" href="/static/styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div>
+        <h1>craft</h1>
+        <p>機械判読性AIレビュー</p>
+      </div>
+      <form id="analysis-form" class="analysis-form">
+        <input id="analysis-url" type="url" placeholder="https://example.jp/table.xlsx" required />
+        <button type="submit">解析</button>
+      </form>
+    </header>
+
+    <main class="layout">
+      <aside class="sidebar">
+        <div class="filters" role="tablist" aria-label="status filter">
+          <button class="active" data-status="all" type="button">すべて</button>
+          <button data-status="pending_review" type="button">未確認</button>
+          <button data-status="reviewed" type="button">確認済</button>
+          <button data-status="needs_investigation" type="button">要調査</button>
+        </div>
+        <div id="analysis-list" class="analysis-list"></div>
+      </aside>
+
+      <section class="detail" id="detail">
+        <div class="empty">
+          <h2>Analysisを選択</h2>
+          <p>URLを解析するか、左の一覧から結果を選択してください。</p>
+        </div>
+      </section>
+    </main>
+
+    <template id="analysis-item-template">
+      <div class="analysis-item">
+        <button class="analysis-open" type="button">
+          <span class="item-url"></span>
+          <span class="item-meta"></span>
+        </button>
+        <button class="analysis-delete" type="button" aria-label="削除">削除</button>
+      </div>
+    </template>
+
+    <script src="/static/app.js"></script>
+  </body>
+</html>

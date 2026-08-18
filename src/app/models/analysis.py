@@ -23,6 +23,11 @@ class AnalysisStatus(StrEnum):
 class ApiExecution(BaseModel):
     source: str
     ok: bool
+    api_base_url: str | None = None
+    endpoint: str | None = None
+    method: str | None = None
+    request_url: str | None = None
+    attempts: list[dict[str, Any]] = Field(default_factory=list)
     data: dict[str, Any] | None = None
     error: str | None = None
 

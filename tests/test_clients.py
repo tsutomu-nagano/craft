@@ -14,6 +14,7 @@ async def test_miner_extract_posts_url() -> None:
     response = await MinerClient("http://miner.test").extract("https://example.test/book.xlsx")
 
     assert route.called
+    assert route.calls.last.request.content == b'{"source":"https://example.test/book.xlsx"}'
     assert response.payload == {"sheets": []}
 
 

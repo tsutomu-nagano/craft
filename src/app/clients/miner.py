@@ -17,7 +17,7 @@ class MinerClient:
         return await self._get("/health")
 
     async def extract(self, url: str) -> MinerResponse:
-        data = await self._post("/api/extract", {"url": url})
+        data = await self._post("/api/extract", {"source": url})
         return MinerResponse(payload=data)
 
     async def convert(self, url: str) -> MinerResponse:

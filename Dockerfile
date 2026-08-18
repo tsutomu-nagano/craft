@@ -13,6 +13,7 @@ RUN uv pip install --system .
 
 COPY skills ./skills
 COPY tests ./tests
+COPY frontend ./frontend
 
 EXPOSE 8000
 

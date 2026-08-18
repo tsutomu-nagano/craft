@@ -22,6 +22,16 @@ class ReviewCreate(BaseModel):
     reviewer: str
 
 
+class ReviewUpdate(BaseModel):
+    target_issue: str | None = None
+    ai_judgement: str | None = None
+    human_decision: ReviewDecision | None = None
+    corrected_content: str | None = None
+    reason: str | None = None
+    comment: str | None = None
+    reviewer: str | None = None
+
+
 class Review(ReviewCreate):
     review_id: str = Field(default_factory=lambda: str(uuid4()))
     analysis_id: str

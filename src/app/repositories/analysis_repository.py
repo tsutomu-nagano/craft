@@ -1,5 +1,8 @@
+from __future__ import annotations
+
 from app.models.analysis import AnalysisResult
 from app.repositories.database import AnalysisRecord, SessionLocal
+from app.repositories.review_repository import ReviewRepository
 
 
 class AnalysisRepository:
@@ -27,3 +30,13 @@ class AnalysisRepository:
     def get(self, analysis_id: str) -> AnalysisRecord | None:
         with SessionLocal() as session:
             return session.get(AnalysisRecord, analysis_id)
+
+    def delete(self, analysis_id: str) -> bool:
+        ReviewRepository().delete_by_analysis(analysis_id)
+        with SessionLocal() as session:
+            record = session.get(AnalysisRecord, analysis_id)
+            if record is None:
+                return False
+            session.delete(record)
+            session.commit()
+            return True

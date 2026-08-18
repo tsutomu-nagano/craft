@@ -28,9 +28,12 @@ API:
 - `POST /api/analyses`
 - `GET /api/analyses`
 - `GET /api/analyses/{analysis_id}`
+- `DELETE /api/analyses/{analysis_id}`
 - `POST /api/analyses/{analysis_id}/reviews`
+- `PATCH /api/reviews/{review_id}`
 - `GET /api/reviews`
 - `POST /mcp`
+- `GET /`
 
 ## Test
 
